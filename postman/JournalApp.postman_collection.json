@@ -1,0 +1,223 @@
+{
+  "info": {
+    "name": "JournalApp",
+    "_postman_id": "c3b8a6f6-5cfd-4f6f-b7ed-b5b0e9b2c456",
+    "description": "Postman Collection for Journal App microservice. Includes authentication, journal CRUD, notifications, and feed for both teachers and students.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:4000" },
+    { "key": "teacher_token", "value": "" },
+    { "key": "student_token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register Teacher",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"teacher1\",\n  \"password\": \"pass123\",\n  \"role\": \"teacher\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/register", "host": [ "{{baseUrl}}" ], "path": [ "auth", "register" ] }
+          }
+        },
+        {
+          "name": "Register Student",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"student1\",\n  \"password\": \"pass123\",\n  \"role\": \"student\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/register", "host": [ "{{baseUrl}}" ], "path": [ "auth", "register" ] }
+          }
+        },
+        {
+          "name": "Login Teacher",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"teacher1\",\n  \"password\": \"pass123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": [ "{{baseUrl}}" ], "path": [ "auth", "login" ] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  var json = pm.response.json();",
+                  "  pm.collectionVariables.set(\"teacher_token\", json.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login Student",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"student1\",\n  \"password\": \"pass123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": [ "{{baseUrl}}" ], "path": [ "auth", "login" ] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  var json = pm.response.json();",
+                  "  pm.collectionVariables.set(\"student_token\", json.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Journal (Teacher Only)",
+      "item": [
+        {
+          "name": "Create Journal (With Attachments)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{teacher_token}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "description", "value": "My first classroom activity with attachments.", "type": "text" },
+                { "key": "published_at", "value": "2025-06-01T10:00:00Z", "type": "text" },
+                { "key": "tagged_students", "value": "[2]", "type": "text" },
+                {
+                  "key": "attachments",
+                  "type": "file",
+                  "src": "",
+                  "description": "Upload one or more files here (image, video, pdf)."
+                },
+                {
+                  "key": "attachment_urls",
+                  "value": "[{\"type\": \"url\", \"url\": \"https://www.example.com\"}]",
+                  "type": "text",
+                  "description": "Provide external URLs as a JSON array, if any."
+                }
+              ]
+            },
+            "url": { "raw": "{{baseUrl}}/journals", "host": [ "{{baseUrl}}" ], "path": [ "journals" ] }
+          }
+        },
+        {
+          "name": "Update Journal",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{teacher_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated classroom activity.\",\n  \"tagged_students\": [2]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/journals/1", "host": [ "{{baseUrl}}" ], "path": [ "journals", "1" ] }
+          }
+        },
+        {
+          "name": "Delete Journal",
+          "request": {
+            "method": "DELETE",
+            "header": [ { "key": "Authorization", "value": "Bearer {{teacher_token}}" } ],
+            "url": { "raw": "{{baseUrl}}/journals/1", "host": [ "{{baseUrl}}" ], "path": [ "journals", "1" ] }
+          }
+        },
+        {
+          "name": "Publish Journal",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Authorization", "value": "Bearer {{teacher_token}}" } ],
+            "url": { "raw": "{{baseUrl}}/journals/1/publish", "host": [ "{{baseUrl}}" ], "path": [ "journals", "1", "publish" ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Feed",
+      "item": [
+        {
+          "name": "Teacher Feed",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{teacher_token}}" } ],
+            "url": { "raw": "{{baseUrl}}/journals/feed", "host": [ "{{baseUrl}}" ], "path": [ "journals", "feed" ] }
+          }
+        },
+        {
+          "name": "Student Feed",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{student_token}}" } ],
+            "url": { "raw": "{{baseUrl}}/journals/feed", "host": [ "{{baseUrl}}" ], "path": [ "journals", "feed" ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "List Notifications (Student)",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{student_token}}" } ],
+            "url": { "raw": "{{baseUrl}}/notifications", "host": [ "{{baseUrl}}" ], "path": [ "notifications" ] }
+          }
+        },
+        {
+          "name": "Mark Notification as Read",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Authorization", "value": "Bearer {{student_token}}" } ],
+            "url": { "raw": "{{baseUrl}}/notifications/1/read", "host": [ "{{baseUrl}}" ], "path": [ "notifications", "1", "read" ] }
+          }
+        },
+        {
+          "name": "Create Notification",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{teacher_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"You have a new journal entry assigned.\",\n  \"user_id\": 2,\n  \"journal_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/notifications",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "notifications" ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

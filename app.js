@@ -14,8 +14,36 @@ app.use('/auth', require('./routes/auth.routes'));
 app.use('/journals', require('./routes/journal.routes'));
 app.use('/notifications', require('./routes/notification.routes'));
 app.get('/', (req, res) => {
-  res.send("Auth POST {{baseUrl}}/auth/register - Register Teacher/Student <br> POST {{baseUrl}}/auth/login - Login Teacher/Student<br>Journal (Teacher Only):<br>POST {{baseUrl}}/journals - Create Journal<br> PUT {{baseUrl}}/journals/1 - Update Journal<br>DELETE {{baseUrl}}/journals/1 - Delete Journal<br>POST {{baseUrl}}/journals/1/publish - Publish Journal<br>Feed:<br>GET {{baseUrl}}/journals/feed - Teacher Feed<br>GET {{baseUrl}}/journals/feed - Student Feed<br>Notifications:<br>GET {{baseUrl}}/notifications - List Notifications (Student)<br>POST {{baseUrl}}/notifications/1/read - Mark Notification as Read (Student)<br>POST {{baseUrl}}/notifications - Create Notification (Teacher)); "
-)});
+  res.send(`
+    <h2>Auth</h2>
+    <ul>
+      <li><strong>POST</strong> {{baseUrl}}/auth/register - Register Teacher/Student</li>
+      <li><strong>POST</strong> {{baseUrl}}/auth/login - Login Teacher/Student</li>
+    </ul>
+
+    <h2>Journal (Teacher Only)</h2>
+    <ul>
+      <li><strong>POST</strong> {{baseUrl}}/journals - Create Journal</li>
+      <li><strong>PUT</strong> {{baseUrl}}/journals/1 - Update Journal</li>
+      <li><strong>DELETE</strong> {{baseUrl}}/journals/1 - Delete Journal</li>
+      <li><strong>POST</strong> {{baseUrl}}/journals/1/publish - Publish Journal</li>
+    </ul>
+
+    <h2>Feed</h2>
+    <ul>
+      <li><strong>GET</strong> {{baseUrl}}/journals/feed - Teacher Feed</li>
+      <li><strong>GET</strong> {{baseUrl}}/journals/feed - Student Feed</li>
+    </ul>
+
+    <h2>Notifications</h2>
+    <ul>
+      <li><strong>GET</strong> {{baseUrl}}/notifications - List Notifications (Student)</li>
+      <li><strong>POST</strong> {{baseUrl}}/notifications/1/read - Mark Notification as Read (Student)</li>
+      <li><strong>POST</strong> {{baseUrl}}/notifications - Create Notification (Teacher)</li>
+    </ul>
+  `);
+});
+
 // Error handler (should be last)
 app.use(errorHandler);
 

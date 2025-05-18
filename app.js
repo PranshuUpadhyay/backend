@@ -11,7 +11,9 @@ app.use('/uploads', express.static('uploads'));
 app.use('/auth', require('./routes/auth.routes'));
 app.use('/journals', require('./routes/journal.routes'));
 app.use('/notifications', require('./routes/notification.routes'));
-
+app.get('/health', (req, res) => {
+  res.status(200).send({ status: 'ok', uptime: process.uptime() });
+});
 // Error handler (should be last)
 app.use(errorHandler);
 
@@ -19,3 +21,4 @@ const PORT = process.env.PORT || 3000;
 sequelize.sync().then(() => {
   app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
 });
+

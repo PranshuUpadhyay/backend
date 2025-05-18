@@ -13,21 +13,9 @@ app.use('/uploads', express.static('uploads'));
 app.use('/auth', require('./routes/auth.routes'));
 app.use('/journals', require('./routes/journal.routes'));
 app.use('/notifications', require('./routes/notification.routes'));
-const fs = require('fs'); // Import the file system module
-
 app.get('/', (req, res) => {
-  const filePath = './postman/JournalApp.postman_collection.json';
-
-  // Read the JSON file and send it as a response
-  fs.readFile(filePath, 'utf8', (err, data) => {
-    if (err) {
-      console.error('Error reading JSON file:', err);
-      res.status(500).send('Error reading JSON file');
-    } else {
-      res.json(JSON.parse(data)); // Send parsed JSON content
-    }
-  });
-});
+  res.send("Auth POST {{baseUrl}}/auth/register - Register Teacher/Student <br> POST {{baseUrl}}/auth/login - Login Teacher/Student<br>Journal (Teacher Only):<br>POST {{baseUrl}}/journals - Create Journal<br> PUT {{baseUrl}}/journals/1 - Update Journal<br>DELETE {{baseUrl}}/journals/1 - Delete Journal<br>POST {{baseUrl}}/journals/1/publish - Publish Journal<br>Feed:<br>GET {{baseUrl}}/journals/feed - Teacher Feed<br>GET {{baseUrl}}/journals/feed - Student Feed<br>Notifications:<br>GET {{baseUrl}}/notifications - List Notifications (Student)<br>POST {{baseUrl}}/notifications/1/read - Mark Notification as Read (Student)<br>POST {{baseUrl}}/notifications - Create Notification (Teacher)); "
+)});
 // Error handler (should be last)
 app.use(errorHandler);
 

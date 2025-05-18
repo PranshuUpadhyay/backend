@@ -41,6 +41,7 @@ app.get('/', (req, res) => {
       <li><strong>POST</strong> {{baseUrl}}/notifications/1/read - Mark Notification as Read (Student)</li>
       <li><strong>POST</strong> {{baseUrl}}/notifications - Create Notification (Teacher)</li>
     </ul>
+    <p>Please ensure if tagged_students are registered before attempting to tag them in Journal. If registered only then Role{Teacher} may tag the student in Journal .  </p>
   `);
 });
 

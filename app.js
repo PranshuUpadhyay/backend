@@ -6,13 +6,15 @@ const errorHandler = require('./middleware/error.middleware');
 
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
-
+app.get('/', (req, res) => {
+  res.send('Welcome to the Journal App Backend!');
+});
 // Routes
 app.use('/auth', require('./routes/auth.routes'));
 app.use('/journals', require('./routes/journal.routes'));
 app.use('/notifications', require('./routes/notification.routes'));
-app.get('/health', (req, res) => {
-  res.status(200).send({ status: 'ok', uptime: process.uptime() });
+app.get('/', (req, res) => {
+  res.redirect('./postman/JournalApp.postman_collection'); 
 });
 // Error handler (should be last)
 app.use(errorHandler);
